@@ -7,10 +7,9 @@ public class Fondo {
         JFrame fondo = new JFrame("DOODLE JUMP");
         fondo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fondo.setSize(400, 620);
-        ImageIcon imageIcon = new ImageIcon("images/doodleFondo.png");
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/images/doodleFondo.png"));
         JLabel label = new JLabel(imageIcon);
         fondo.add(label);
         fondo.setVisible(true);
     }
 }
-
