@@ -29,5 +29,6 @@ public class Fondo extends JFrame {
         this.fondo.add(layeredPane, BorderLayout.CENTER);
         this.fondo.setResizable(false);
         this.fondo.setVisible(true);
+        this.fondo.setLocationRelativeTo(null);
     }
 }
