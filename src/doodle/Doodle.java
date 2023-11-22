@@ -1,10 +1,13 @@
 package doodle;
-
-import doodle.jump.equipo7.grafico.Fondo;
+import doodle.jump.equipo7.grafico.Botones;
 
 public class Doodle {
     public static void main(String[] args) {
-        Fondo fondo = new Fondo();
-        fondo.mostrarFondoyPersonaje();
+        Botones juego = new Botones();
+        juego.setBounds(0, 0, 400, 620);
+        juego.setVisible(true);
+        juego.setResizable(false);
+        juego.setLocationRelativeTo(null);
+        //fondo.mostrarFondoyPersonaje();
     }
 }

@@ -3,7 +3,7 @@ package doodle.jump.equipo7.grafico;
 import javax.swing.*;
 import java.awt.*;
 
-public class Fondo extends JFrame {
+public class Fondo extends JFrame{
     JLayeredPane juego = new JLayeredPane();
     public Fondo() {
         super("DOODLE JUMP");
