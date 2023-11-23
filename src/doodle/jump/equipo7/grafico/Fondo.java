@@ -23,6 +23,10 @@ public class Fondo extends JFrame {
         labelDino.setBounds(50, 50, imagenDinoDerecha.getIconWidth(), imagenDinoDerecha.getIconHeight());
         juego.add(labelDino, Integer.valueOf(1));
 
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/Smily.png"));
+        Image iconImage = icon.getImage();
+        setIconImage(iconImage);
+
         // Agregar controlador de eventos de teclado
         addKeyListener(new KeyListener() {
             @Override

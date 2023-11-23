@@ -8,6 +8,5 @@ public class Doodle {
         juego.setVisible(true);
         juego.setResizable(false);
         juego.setLocationRelativeTo(null);
-        //fondo.mostrarFondoyPersonaje();
     }
 }
