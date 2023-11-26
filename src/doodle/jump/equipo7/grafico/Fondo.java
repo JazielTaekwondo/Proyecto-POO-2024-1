@@ -42,6 +42,11 @@ public class Fondo extends JFrame {
                 } else if (key == KeyEvent.VK_RIGHT) {
                     moverSmilyDerecha();
                 }
+                else if (key == KeyEvent.VK_UP) {
+                    moverSmilyArriba();
+                } else if (key == KeyEvent.VK_DOWN) {
+                    moverSmilyAbajo();
+                }
             }
 
             @Override
@@ -89,4 +94,21 @@ public class Fondo extends JFrame {
             labelDino.setLocation(x, labelDino.getY());
         }
     }
+
+    public void moverSmilyArriba() {
+        int y = labelDino.getY();
+        if (y > 0) {
+            y -= 10; // Ajusta la cantidad de píxeles que el dino se mueve hacia arriba
+            labelDino.setLocation(labelDino.getX(), y);
+        }
+    }
+    
+    public void moverSmilyAbajo() {
+        int y = labelDino.getY();
+        if (y < getHeight() - labelDino.getHeight()) {
+            y += 10; // Ajusta la cantidad de píxeles que el dino se mueve hacia abajo
+            labelDino.setLocation(labelDino.getX(), y);
+        }
+    }
+    
 }
