@@ -20,8 +20,8 @@ public class Fondo extends JFrame {
 
         // Configurar la imagen inicial del dino
         labelDino = new JLabel(imagenDinoDerecha);
-        labelDino.setBounds(50, 50, imagenDinoDerecha.getIconWidth(), imagenDinoDerecha.getIconHeight());
-        juego.add(labelDino, Integer.valueOf(1));
+        labelDino.setBounds(150, 325, imagenDinoDerecha.getIconWidth(), imagenDinoDerecha.getIconHeight());
+        juego.add(labelDino, Integer.valueOf(2));
 
         ImageIcon icon = new ImageIcon(getClass().getResource("/images/Smily.png"));
         Image iconImage = icon.getImage();
@@ -75,6 +75,10 @@ public class Fondo extends JFrame {
         JLabel labelFondo = new JLabel(imagenFondo);
         labelFondo.setBounds(0, 0, 400, 620);
         juego.add(labelFondo, Integer.valueOf(0));
+        ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
+        JLabel labelPlataforma = new JLabel(imagenPlataforma);
+        labelPlataforma.setBounds(150, 400,256, 128);
+        juego.add(labelPlataforma, Integer.valueOf(1));
     }
 
     public void moverSmilyIzquierda() {
