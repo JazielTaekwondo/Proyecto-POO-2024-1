@@ -3,16 +3,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Fondo extends JFrame {
     private JLayeredPane juego = new JLayeredPane();
     private JLabel labelDino;
     private ImageIcon imagenDinoDerecha;
     private ImageIcon imagenDinoIzquierda;
+    private List<JLabel> plataformas; // Lista de plataformas
 
     public Fondo() {
         super("DOODLE JUMP");
         setLayout(new BorderLayout());
+
+        plataformas = new ArrayList<>(); // Inicializa la lista de plataformas
 
         // Cargar imágenes del dino
         imagenDinoDerecha = new ImageIcon(getClass().getResource("/images/SmilyD.png"));
@@ -115,4 +121,19 @@ public class Fondo extends JFrame {
         }
     }
     
+    public void generarPlataformas() {
+        Random random = new Random();
+        int numeroDePlataformas = 10; // Cantidad inicial de plataformas
+        int yInicial = 500; // Altura inicial de las plataformas
+
+        for (int i = 0; i < numeroDePlataformas; i++) {
+            ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
+            JLabel labelPlataforma = new JLabel(imagenPlataforma);
+            int x = random.nextInt(300); // Posición X aleatoria dentro del ancho del juego
+            int y = yInicial - i * 100; // Espaciado vertical entre plataformas
+            labelPlataforma.setBounds(x, y, imagenPlataforma.getIconWidth(), imagenPlataforma.getIconHeight());
+            juego.add(labelPlataforma, Integer.valueOf(1));
+            plataformas.add(labelPlataforma); // Agrega la plataforma a la lista
+        }
+    }
 }
