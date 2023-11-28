@@ -16,7 +16,7 @@ public class Fondo extends JFrame {
 
         // Cargar imágenes del dino
         imagenDinoDerecha = new ImageIcon(getClass().getResource("/images/SmilyD.png"));
-        imagenDinoIzquierda = new ImageIcon(getClass().getResource("/images/SmilyI.png"));
+        imagenDinoIzquierda = new ImageIcon(getClass().getResource("/images/Smilyl.png"));
 
         // Configurar la imagen inicial del dino
         labelDino = new JLabel(imagenDinoDerecha);
