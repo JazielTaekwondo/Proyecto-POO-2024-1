@@ -13,6 +13,11 @@ public class Fondo extends JFrame {
     private ImageIcon imagenDinoDerecha;
     private ImageIcon imagenDinoIzquierda;
     private List<JLabel> plataformas; // Lista de plataformas
+    private Timer temporizador; // Temporizador para el movimiento automático
+    private int velocidad = 5; // Ajusta la velocidad del movimiento hacia arriba
+    private int limiteSuperior = 200; // Ajusta el punto en el que el muñeco deja de subir
+    private int velocidadCaida = 3; // Ajusta la velocidad de caída del muñeco
+    private boolean cayendo = false; // Variable para controlar si el muñeco está cayendo
 
     public Fondo() {
         super("DOODLE JUMP");
@@ -22,16 +27,23 @@ public class Fondo extends JFrame {
 
         // Cargar imágenes del dino
         imagenDinoDerecha = new ImageIcon(getClass().getResource("/images/SmilyD.png"));
-        imagenDinoIzquierda = new ImageIcon(getClass().getResource("/images/SmilyI.png"));
+        imagenDinoIzquierda = new ImageIcon(getClass().getResource("/images/SmilyL.png"));
 
         // Configurar la imagen inicial del dino
         labelDino = new JLabel(imagenDinoDerecha);
-        labelDino.setBounds(150, 325, imagenDinoDerecha.getIconWidth(), imagenDinoDerecha.getIconHeight());
+        labelDino.setBounds(100, 450, imagenDinoDerecha.getIconWidth(), imagenDinoDerecha.getIconHeight());
         juego.add(labelDino, Integer.valueOf(2));
 
         ImageIcon icon = new ImageIcon(getClass().getResource("/images/Smily.png"));
         Image iconImage = icon.getImage();
         setIconImage(iconImage);
+        
+        // Configurar el temporizador para el movimiento automático hacia arriba
+        temporizador = new Timer(20, e -> moverSmilyArriba());
+        temporizador.start();
+
+        // Inicializar la variable cayendo a false al inicio del juego
+        cayendo = false;
 
         // Agregar controlador de eventos de teclado
         addKeyListener(new KeyListener() {
@@ -47,12 +59,11 @@ public class Fondo extends JFrame {
                     moverSmilyIzquierda();
                 } else if (key == KeyEvent.VK_RIGHT) {
                     moverSmilyDerecha();
-                }
-                else if (key == KeyEvent.VK_UP) {
-                    moverSmilyArriba();
-                } else if (key == KeyEvent.VK_DOWN) {
-                    moverSmilyAbajo();
-                }
+                }//else if (key == KeyEvent.VK_UP) {
+                    //moverSmilyArriba();
+                //} //else if (key == KeyEvent.VK_DOWN) {
+                    //moverSmilyAbajo();
+                //}
             }
 
             @Override
@@ -81,10 +92,12 @@ public class Fondo extends JFrame {
         JLabel labelFondo = new JLabel(imagenFondo);
         labelFondo.setBounds(0, 0, 400, 620);
         juego.add(labelFondo, Integer.valueOf(0));
+
         ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
         JLabel labelPlataforma = new JLabel(imagenPlataforma);
         labelPlataforma.setBounds(150, 400,256, 128);
         juego.add(labelPlataforma, Integer.valueOf(1));
+
     }
 
     public void moverSmilyIzquierda() {
@@ -107,11 +120,70 @@ public class Fondo extends JFrame {
 
     public void moverSmilyArriba() {
         int y = labelDino.getY();
-        if (y > 0) {
-            y -= 10; // Ajusta la cantidad de píxeles que el dino se mueve hacia arriba
+        if (y > limiteSuperior && !cayendo) {
+            y -= velocidad;
             labelDino.setLocation(labelDino.getX(), y);
+        } else {
+            if (!cayendo) {
+                // El muñeco llegó al límite superior, detener el temporizador
+                temporizador.stop();
+                temporizador.setInitialDelay(0); // Reiniciar el retardo inicial del temporizador
+                // Reiniciar el temporizador para la caída
+                temporizador.start();
+                // Cambiar la dirección del movimiento a caída
+                cayendo = true;
+            } else {
+                // El muñeco está cayendo, ajustar la posición vertical hacia abajo
+                y += velocidadCaida;
+                labelDino.setLocation(labelDino.getX(), y);
+
+                // Verificar si el muñeco toca una plataforma
+                if (tocaPlataforma()) {
+                    // Reiniciar el temporizador para el próximo ciclo de salto
+                    temporizador.stop();
+                    temporizador.setInitialDelay(0); // Reiniciar el retardo inicial del temporizador
+                    temporizador.start();
+                    // Reiniciar la dirección del movimiento
+                    cayendo = false;
+                }
+            }
         }
     }
+
+    private boolean tocaPlataforma() {
+        // Obtener las coordenadas del muñeco
+        int xMuñeco = labelDino.getX();
+        int yMuñeco = labelDino.getY();
+        int anchoMuñeco = labelDino.getWidth();
+        int altoMuñeco = labelDino.getHeight();
+    
+        // Iterar sobre las plataformas para verificar si el muñeco toca alguna
+        for (JLabel plataforma : plataformas) {
+            // Obtener las coordenadas de la plataforma
+            int xPlataforma = plataforma.getX();
+            int yPlataforma = plataforma.getY();
+            int anchoPlataforma = plataforma.getWidth();
+            int altoPlataforma = plataforma.getHeight();
+    
+            // Verificar si hay intersección entre el muñeco y la plataforma
+            if (xMuñeco < xPlataforma + anchoPlataforma &&
+                xMuñeco + anchoMuñeco > xPlataforma &&
+                yMuñeco < yPlataforma + altoPlataforma &&
+                yMuñeco + altoMuñeco > yPlataforma) {
+                // El muñeco toca la plataforma
+                // Detener el temporizador
+                temporizador.stop();
+                // Cambiar la dirección del movimiento a caída
+                cayendo = false;
+                // Reiniciar el temporizador para el próximo ciclo de salto
+                temporizador.start();
+                return true;
+            }
+        }
+        // El muñeco no toca ninguna plataforma
+        return false;
+    }
+
     
     public void moverSmilyAbajo() {
         int y = labelDino.getY();
@@ -123,14 +195,14 @@ public class Fondo extends JFrame {
     
     public void generarPlataformas() {
         Random random = new Random();
-        int numeroDePlataformas = 10; // Cantidad inicial de plataformas
+        int numeroDePlataformas = 2; // Cantidad inicial de plataformas
         int yInicial = 500; // Altura inicial de las plataformas
 
         for (int i = 0; i < numeroDePlataformas; i++) {
             ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
             JLabel labelPlataforma = new JLabel(imagenPlataforma);
-            int x = random.nextInt(300); // Posición X aleatoria dentro del ancho del juego
-            int y = yInicial - i * 100; // Espaciado vertical entre plataformas
+            int x = random.nextInt(400 - imagenPlataforma.getIconWidth()); // Ajuste para evitar que las plataformas salgan del ancho del juego
+            int y = yInicial - i * 150; // Espaciado vertical entre plataformas
             labelPlataforma.setBounds(x, y, imagenPlataforma.getIconWidth(), imagenPlataforma.getIconHeight());
             juego.add(labelPlataforma, Integer.valueOf(1));
             plataformas.add(labelPlataforma); // Agrega la plataforma a la lista
