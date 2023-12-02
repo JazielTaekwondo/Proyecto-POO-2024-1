@@ -16,7 +16,7 @@ public class Fondo extends JFrame {
     private Timer temporizador; // Temporizador para el movimiento automático
     private int velocidad = 5; // Ajusta la velocidad del movimiento hacia arriba
     private int limiteSuperior = 200; // Ajusta el punto en el que el muñeco deja de subir
-    private int velocidadCaida = 3; // Ajusta la velocidad de caída del muñeco
+    private int velocidadCaida = 5; // Ajusta la velocidad de caída del muñeco
     private boolean cayendo = false; // Variable para controlar si el muñeco está cayendo
 
     public Fondo() {
@@ -85,7 +85,21 @@ public class Fondo extends JFrame {
         setVisible(true);
     }
 
+    private JLabel labelFondo1;
+    private JLabel labelFondo2;
     public void crearFondo() {
+        juego.setPreferredSize(new Dimension(400, 620));
+    
+        ImageIcon imagenFondo = new ImageIcon(getClass().getResource("/images/doodleFondo.png"));
+        labelFondo1 = new JLabel(imagenFondo);
+        labelFondo1.setBounds(0, 0, 400, 620);
+        juego.add(labelFondo1, Integer.valueOf(0));
+    
+        labelFondo2 = new JLabel(imagenFondo);
+        labelFondo2.setBounds(0, -620, 400, 620);
+        juego.add(labelFondo2, Integer.valueOf(0));
+    }
+    /*public void crearFondo() {
         juego.setPreferredSize(new Dimension(400, 620));
 
         ImageIcon imagenFondo = new ImageIcon(getClass().getResource("/images/doodleFondo.png"));
@@ -98,7 +112,7 @@ public class Fondo extends JFrame {
         labelPlataforma.setBounds(150, 400,256, 128);
         juego.add(labelPlataforma, Integer.valueOf(1));
 
-    }
+    }*/
 
     public void moverSmilyIzquierda() {
         labelDino.setIcon(imagenDinoIzquierda);
@@ -123,6 +137,7 @@ public class Fondo extends JFrame {
         if (y > limiteSuperior && !cayendo) {
             y -= velocidad;
             labelDino.setLocation(labelDino.getX(), y);
+            moverFondo(-velocidadCaida+4); 
         } else {
             if (!cayendo) {
                 // El muñeco llegó al límite superior, detener el temporizador
@@ -136,6 +151,7 @@ public class Fondo extends JFrame {
                 // El muñeco está cayendo, ajustar la posición vertical hacia abajo
                 y += velocidadCaida;
                 labelDino.setLocation(labelDino.getX(), y);
+                moverFondo(velocidad-4);
 
                 // Verificar si el muñeco toca una plataforma
                 if (tocaPlataforma()) {
@@ -208,4 +224,41 @@ public class Fondo extends JFrame {
             plataformas.add(labelPlataforma); // Agrega la plataforma a la lista
         }
     }
+
+    
+
+    public void moverFondo(int velocidad) {
+        // Obtén la posición actual de los fondos
+        Point posFondo1 = labelFondo1.getLocation();
+        Point posFondo2 = labelFondo2.getLocation();
+        
+        // Mueve los fondos hacia arriba o abajo dependiendo de la velocidad proporcionada
+        posFondo1.translate(0, velocidad);
+        posFondo2.translate(0, velocidad);
+        
+        // Verifica si el primer fondo se salió de la pantalla
+        if (posFondo1.y >= 620) {
+            // Coloca el primer fondo arriba del segundo fondo
+            posFondo1.setLocation(0, posFondo2.y - 620);
+        } else if (posFondo1.y <= -620) {
+            // Coloca el primer fondo debajo del segundo fondo
+            posFondo1.setLocation(0, posFondo2.y + 620);
+        }
+        
+        // Verifica si el segundo fondo se salió de la pantalla
+        if (posFondo2.y >= 620) {
+            // Coloca el segundo fondo arriba del primer fondo
+            posFondo2.setLocation(0, posFondo1.y - 620);
+        } else if (posFondo2.y <= -620) {
+            // Coloca el segundo fondo debajo del primer fondo
+            posFondo2.setLocation(0, posFondo1.y + 620);
+        }
+    
+        // Actualiza las posiciones de los fondos
+        labelFondo1.setLocation(posFondo1);
+        labelFondo2.setLocation(posFondo2);
+    }
+    
+
+    
 }
