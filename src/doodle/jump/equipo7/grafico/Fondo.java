@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
 public class Fondo extends JFrame {
     private JLayeredPane juego = new JLayeredPane();
     private JLabel labelDino;
