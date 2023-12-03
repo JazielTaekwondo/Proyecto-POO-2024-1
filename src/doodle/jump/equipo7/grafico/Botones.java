@@ -15,8 +15,8 @@ public class Botones extends JFrame implements ActionListener {
         salir = new JButton();
         ImageIcon fotoBoton = new ImageIcon(getClass().getResource("/images/BotonInicio.png"));
         ImageIcon fotoBoton2 = new ImageIcon(getClass().getResource("/images/BotonSalida.png"));
-        inicio.setBounds(80, 290, 100, 40);
-        salir.setBounds(220, 290, 100, 40);
+        inicio.setBounds(150, 430, 100, 40);
+        salir.setBounds(350, 430, 100, 40);
         inicio.setIcon(fotoBoton);
         salir.setIcon(fotoBoton2);
         add(inicio);

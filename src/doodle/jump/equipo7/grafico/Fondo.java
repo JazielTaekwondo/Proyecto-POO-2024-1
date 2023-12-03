@@ -75,7 +75,7 @@ public class Fondo extends JFrame {
 
         setFocusable(true); // Permitir que el JFrame reciba eventos de teclado
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 620);
+        setSize(600, 900);
         setLocationRelativeTo(null);
     }
 
@@ -89,15 +89,15 @@ public class Fondo extends JFrame {
     private JLabel labelFondo1;
     private JLabel labelFondo2;
     public void crearFondo() {
-        juego.setPreferredSize(new Dimension(400, 620));
+        juego.setPreferredSize(new Dimension(600, 900));
     
         ImageIcon imagenFondo = new ImageIcon(getClass().getResource("/images/doodleFondo.png"));
         labelFondo1 = new JLabel(imagenFondo);
-        labelFondo1.setBounds(0, 0, 400, 620);
+        labelFondo1.setBounds(0, 0, 600, 900);
         juego.add(labelFondo1, Integer.valueOf(0));
     
         labelFondo2 = new JLabel(imagenFondo);
-        labelFondo2.setBounds(0, -620, 400, 620);
+        labelFondo2.setBounds(0, -900, 600, 900);
         juego.add(labelFondo2, Integer.valueOf(0));
     }
     /*public void crearFondo() {
@@ -242,21 +242,21 @@ public class Fondo extends JFrame {
         posFondo2.translate(0, velocidad);
         
         // Verifica si el primer fondo se salió de la pantalla
-        if (posFondo1.y >= 620) {
+        if (posFondo1.y >= 900) {
             // Coloca el primer fondo arriba del segundo fondo
-            posFondo1.setLocation(0, posFondo2.y - 620);
-        } else if (posFondo1.y <= -620) {
+            posFondo1.setLocation(0, posFondo2.y - 900);
+        } else if (posFondo1.y <= -900) {
             // Coloca el primer fondo debajo del segundo fondo
-            posFondo1.setLocation(0, posFondo2.y + 620);
+            posFondo1.setLocation(0, posFondo2.y + 900);
         }
         
         // Verifica si el segundo fondo se salió de la pantalla
-        if (posFondo2.y >= 620) {
+        if (posFondo2.y >= 900) {
             // Coloca el segundo fondo arriba del primer fondo
-            posFondo2.setLocation(0, posFondo1.y - 620);
-        } else if (posFondo2.y <= -620) {
+            posFondo2.setLocation(0, posFondo1.y - 900);
+        } else if (posFondo2.y <= -900) {
             // Coloca el segundo fondo debajo del primer fondo
-            posFondo2.setLocation(0, posFondo1.y + 620);
+            posFondo2.setLocation(0, posFondo1.y + 900);
         }
     
         // Actualiza las posiciones de los fondos
@@ -270,9 +270,9 @@ public class Fondo extends JFrame {
         JLabel labelPlataforma = new JLabel(imagenPlataforma);
         
         // Define la posición X de la nueva plataforma de forma aleatoria dentro del ancho del juego
-        int x = random.nextInt(400 - imagenPlataforma.getIconWidth());
+        int x = random.nextInt(600 - imagenPlataforma.getIconWidth());
         // Define la posición Y de la nueva plataforma justo debajo del límite inferior
-        int y = 620;
+        int y = 900;
         
         labelPlataforma.setBounds(x, y, imagenPlataforma.getIconWidth(), imagenPlataforma.getIconHeight());
         juego.add(labelPlataforma, Integer.valueOf(1));
