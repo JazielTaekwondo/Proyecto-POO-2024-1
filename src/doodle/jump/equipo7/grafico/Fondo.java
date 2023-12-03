@@ -132,13 +132,17 @@ public class Fondo extends JFrame {
             labelDino.setLocation(x, labelDino.getY());
         }
     }
-
+    
+    
     public void moverSmilyArriba() {
         int y = labelDino.getY();
         if (y > limiteSuperior && !cayendo) {
             y -= velocidad;
             labelDino.setLocation(labelDino.getX(), y);
-            moverFondo(-velocidadCaida+4); 
+            moverFondo(-velocidadCaida+4);
+            if (y % 200 == 0) { // Genera una nueva plataforma cada 200 píxeles
+                generarNuevaPlataforma();
+            }
         } else {
             if (!cayendo) {
                 // El muñeco llegó al límite superior, detener el temporizador
@@ -260,6 +264,20 @@ public class Fondo extends JFrame {
         labelFondo2.setLocation(posFondo2);
     }
     
-
+    public void generarNuevaPlataforma() {
+        Random random = new Random();
+        ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
+        JLabel labelPlataforma = new JLabel(imagenPlataforma);
+        
+        // Define la posición X de la nueva plataforma de forma aleatoria dentro del ancho del juego
+        int x = random.nextInt(400 - imagenPlataforma.getIconWidth());
+        // Define la posición Y de la nueva plataforma justo debajo del límite inferior
+        int y = 620;
+        
+        labelPlataforma.setBounds(x, y, imagenPlataforma.getIconWidth(), imagenPlataforma.getIconHeight());
+        juego.add(labelPlataforma, Integer.valueOf(1));
+        plataformas.add(labelPlataforma); // Agrega la nueva plataforma a la lista de plataformas
+    }
+    
     
 }
