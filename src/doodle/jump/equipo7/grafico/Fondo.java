@@ -15,10 +15,12 @@ public class Fondo extends JFrame {
     private ImageIcon imagenDinoIzquierda;
     private List<JLabel> plataformas; // Lista de plataformas
     private Timer temporizador; // Temporizador para el movimiento automático
-    private int velocidad = 5; // Ajusta la velocidad del movimiento hacia arriba
-    private int limiteSuperior = 200; // Ajusta el punto en el que el muñeco deja de subir
-    private int velocidadCaida = 5; // Ajusta la velocidad de caída del muñeco
+    private int velocidad = 2; // Ajusta la velocidad del movimiento hacia arriba
+    //private int limiteSuperior = 200; // Ajusta el punto en el que el muñeco deja de subir
+    private int velocidadCaida = 2; // Ajusta la velocidad de caída del muñeco
     private boolean cayendo = false; // Variable para controlar si el muñeco está cayendo
+    //private int posicionVerticalAnterior = 0;
+    private int distanciaRecorrida = 0;
 
     public Fondo() {
         super("DOODLE JUMP");
@@ -32,7 +34,7 @@ public class Fondo extends JFrame {
 
         // Configurar la imagen inicial del dino
         labelDino = new JLabel(imagenDinoDerecha);
-        labelDino.setBounds(100, 450, imagenDinoDerecha.getIconWidth(), imagenDinoDerecha.getIconHeight());
+        labelDino.setBounds(300, 700, imagenDinoDerecha.getIconWidth(), imagenDinoDerecha.getIconHeight());
         juego.add(labelDino, Integer.valueOf(2));
 
         ImageIcon icon = new ImageIcon(getClass().getResource("/images/Smily.png"));
@@ -100,20 +102,6 @@ public class Fondo extends JFrame {
         labelFondo2.setBounds(0, -900, 600, 900);
         juego.add(labelFondo2, Integer.valueOf(0));
     }
-    /*public void crearFondo() {
-        juego.setPreferredSize(new Dimension(400, 620));
-
-        ImageIcon imagenFondo = new ImageIcon(getClass().getResource("/images/doodleFondo.png"));
-        JLabel labelFondo = new JLabel(imagenFondo);
-        labelFondo.setBounds(0, 0, 400, 620);
-        juego.add(labelFondo, Integer.valueOf(0));
-
-        ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
-        JLabel labelPlataforma = new JLabel(imagenPlataforma);
-        labelPlataforma.setBounds(150, 400,256, 128);
-        juego.add(labelPlataforma, Integer.valueOf(1));
-
-    }*/
 
     public void moverSmilyIzquierda() {
         labelDino.setIcon(imagenDinoIzquierda);
@@ -133,40 +121,42 @@ public class Fondo extends JFrame {
         }
     }
     
-    
     public void moverSmilyArriba() {
         int y = labelDino.getY();
-        if (y > limiteSuperior && !cayendo) {
+    
+        if (!cayendo) {
+            // El dinosaurio está subiendo
             y -= velocidad;
+            distanciaRecorrida += velocidad;
             labelDino.setLocation(labelDino.getX(), y);
-            moverFondo(-velocidadCaida+4);
-            if (y % 200 == 0) { // Genera una nueva plataforma cada 200 píxeles
+            moverFondo(-velocidadCaida + 6);
+    
+            // Verificar si el dinosaurio ha recorrido 200 píxeles hacia arriba
+            if (distanciaRecorrida >= 200) {
+                // Cambiar al modo de caída
                 generarNuevaPlataforma();
+
+                temporizador.stop();
+                temporizador.setInitialDelay(0);
+                temporizador.start();
+                cayendo = true;
+                
             }
         } else {
-            if (!cayendo) {
-                // El muñeco llegó al límite superior, detener el temporizador
+            // El dinosaurio está cayendo
+            y += velocidadCaida;
+            labelDino.setLocation(labelDino.getX(), y);
+            moverFondo(velocidad - 4);
+    
+            // Verificar si el dinosaurio toca una plataforma
+            if (tocaPlataforma()) {
+                // Reiniciar el temporizador para el próximo ciclo de salto
                 temporizador.stop();
-                temporizador.setInitialDelay(0); // Reiniciar el retardo inicial del temporizador
-                // Reiniciar el temporizador para la caída
+                temporizador.setInitialDelay(0);
                 temporizador.start();
-                // Cambiar la dirección del movimiento a caída
-                cayendo = true;
-            } else {
-                // El muñeco está cayendo, ajustar la posición vertical hacia abajo
-                y += velocidadCaida;
-                labelDino.setLocation(labelDino.getX(), y);
-                moverFondo(velocidad-4);
-
-                // Verificar si el muñeco toca una plataforma
-                if (tocaPlataforma()) {
-                    // Reiniciar el temporizador para el próximo ciclo de salto
-                    temporizador.stop();
-                    temporizador.setInitialDelay(0); // Reiniciar el retardo inicial del temporizador
-                    temporizador.start();
-                    // Reiniciar la dirección del movimiento
-                    cayendo = false;
-                }
+                cayendo = false;
+                // Reiniciar la distancia recorrida
+                distanciaRecorrida = 0;
             }
         }
     }
@@ -272,12 +262,27 @@ public class Fondo extends JFrame {
         // Define la posición X de la nueva plataforma de forma aleatoria dentro del ancho del juego
         int x = random.nextInt(600 - imagenPlataforma.getIconWidth());
         // Define la posición Y de la nueva plataforma justo debajo del límite inferior
-        int y = 900;
+        int y = 100;
         
         labelPlataforma.setBounds(x, y, imagenPlataforma.getIconWidth(), imagenPlataforma.getIconHeight());
         juego.add(labelPlataforma, Integer.valueOf(1));
         plataformas.add(labelPlataforma); // Agrega la nueva plataforma a la lista de plataformas
     }
     
-    
 }
+
+
+    /*public void crearFondo() {
+        juego.setPreferredSize(new Dimension(400, 620));
+
+        ImageIcon imagenFondo = new ImageIcon(getClass().getResource("/images/doodleFondo.png"));
+        JLabel labelFondo = new JLabel(imagenFondo);
+        labelFondo.setBounds(0, 0, 400, 620);
+        juego.add(labelFondo, Integer.valueOf(0));
+
+        ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
+        JLabel labelPlataforma = new JLabel(imagenPlataforma);
+        labelPlataforma.setBounds(150, 400,256, 128);
+        juego.add(labelPlataforma, Integer.valueOf(1));
+
+    }*/
