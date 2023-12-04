@@ -12,7 +12,7 @@ public class Fondo extends JFrame {
     private JLabel labelFondo;
     private int posicionFondo = 0;
     private boolean personajeEnMovimiento = false;
-
+    private int velocidadFondo = 1;
     private String personajeSeleccionado;
     private String fondoSeleccionado;
 
@@ -63,7 +63,32 @@ public class Fondo extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 800); // Ajustar el tamaño de la ventana
         setLocationRelativeTo(null);
+
+        Thread movimientoFondo = new Thread(() -> {
+            while (true) {
+                moverFondo();
+                try {
+                    Thread.sleep(10); // Pequeño retraso para el efecto visual
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        movimientoFondo.start();
     }
+
+    public void moverFondo() {
+        int y = labelFondo.getY();
+        y += velocidadFondo; // Ajusta la velocidad de desplazamiento del fondo
+    
+        // Si el fondo superior sale de la pantalla, reposiciónalo arriba del fondo inferior
+        if (y >= getHeight()) {
+            y = -labelFondo.getHeight();
+        }
+    
+        labelFondo.setLocation(labelFondo.getX(), y);
+    }
+    
 
     public void mostrarFondoyPersonaje() {
         add(juego, BorderLayout.CENTER);
@@ -117,123 +142,4 @@ public class Fondo extends JFrame {
 
 
 
-    /*public void crearFondo() {
-        juego.setPreferredSize(new Dimension(400, 620));
-
-        ImageIcon imagenFondo = new ImageIcon(getClass().getResource("/images/doodleFondo.png"));
-        JLabel labelFondo = new JLabel(imagenFondo);
-        labelFondo.setBounds(0, 0, 400, 620);
-        juego.add(labelFondo, Integer.valueOf(0));
-
-        ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
-        JLabel labelPlataforma = new JLabel(imagenPlataforma);
-        labelPlataforma.setBounds(150, 400,256, 128);
-        juego.add(labelPlataforma, Integer.valueOf(1));
-
-    }
-    public void moverSmilyAbajo() {
-        int y = labelDino.getY();
-        if (y < getHeight() - labelDino.getHeight()) {
-            y += 10; // Ajusta la cantidad de píxeles que el dino se mueve hacia abajo
-            labelDino.setLocation(labelDino.getX(), y);
-        }
-    }
-    
-
-    public void generarPlataformas() {
-        Random random = new Random();
-        int numeroDePlataformas = 2; // Cantidad inicial de plataformas
-        int yInicial = 500; // Altura inicial de las plataformas
-
-        for (int i = 0; i < numeroDePlataformas; i++) {
-            ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
-            JLabel labelPlataforma = new JLabel(imagenPlataforma);
-            int x = random.nextInt(400 - imagenPlataforma.getIconWidth()); // Ajuste para evitar que las plataformas salgan del ancho del juego
-            int y = yInicial - i * 150; // Espaciado vertical entre plataformas
-            labelPlataforma.setBounds(x, y, imagenPlataforma.getIconWidth(), imagenPlataforma.getIconHeight());
-            juego.add(labelPlataforma, Integer.valueOf(1));
-            plataformas.add(labelPlataforma); // Agrega la plataforma a la lista
-        }
-    }
-
-    private boolean tocaPlataforma() {
-        // Obtener las coordenadas del muñeco
-        int xMuñeco = labelDino.getX();
-        int yMuñeco = labelDino.getY();
-        int anchoMuñeco = labelDino.getWidth();
-        int altoMuñeco = labelDino.getHeight();
-    
-        // Iterar sobre las plataformas para verificar si el muñeco toca alguna
-        for (JLabel plataforma : plataformas) {
-            // Obtener las coordenadas de la plataforma
-            int xPlataforma = plataforma.getX();
-            int yPlataforma = plataforma.getY();
-            int anchoPlataforma = plataforma.getWidth();
-            int altoPlataforma = plataforma.getHeight();
-    
-            // Verificar si hay intersección entre el muñeco y la plataforma
-            if (xMuñeco < xPlataforma + anchoPlataforma &&
-                xMuñeco + anchoMuñeco > xPlataforma &&
-                yMuñeco < yPlataforma + altoPlataforma &&
-                yMuñeco + altoMuñeco > yPlataforma) {
-                // El muñeco toca la plataforma
-                // Detener el temporizador
-                temporizador.stop();
-                // Cambiar la dirección del movimiento a caída
-                cayendo = false;
-                // Reiniciar el temporizador para el próximo ciclo de salto
-                temporizador.start();
-                return true;
-            }
-        }
-        // El muñeco no toca ninguna plataforma
-        return false;
-
-        public void moverFondo(int velocidad) {
-        // Obtén la posición actual de los fondos
-        Point posFondo1 = labelFondo1.getLocation();
-        Point posFondo2 = labelFondo2.getLocation();
-        
-        // Mueve los fondos hacia arriba o abajo dependiendo de la velocidad proporcionada
-        posFondo1.translate(0, velocidad);
-        posFondo2.translate(0, velocidad);
-        
-        // Verifica si el primer fondo se salió de la pantalla
-        if (posFondo1.y >= 900) {
-            // Coloca el primer fondo arriba del segundo fondo
-            posFondo1.setLocation(0, posFondo2.y - 900);
-        } else if (posFondo1.y <= -900) {
-            // Coloca el primer fondo debajo del segundo fondo
-            posFondo1.setLocation(0, posFondo2.y + 900);
-        }
-        
-        // Verifica si el segundo fondo se salió de la pantalla
-        if (posFondo2.y >= 900) {
-            // Coloca el segundo fondo arriba del primer fondo
-            posFondo2.setLocation(0, posFondo1.y - 900);
-        } else if (posFondo2.y <= -900) {
-            // Coloca el segundo fondo debajo del primer fondo
-            posFondo2.setLocation(0, posFondo1.y + 900);
-        }
-    
-        // Actualiza las posiciones de los fondos
-        labelFondo1.setLocation(posFondo1);
-        labelFondo2.setLocation(posFondo2);
-    }
-    
-    public void generarNuevaPlataforma() {
-        Random random = new Random();
-        ImageIcon imagenPlataforma = new ImageIcon(getClass().getResource("/images/Plataforma.png"));
-        JLabel labelPlataforma = new JLabel(imagenPlataforma);
-        
-        // Define la posición X de la nueva plataforma de forma aleatoria dentro del ancho del juego
-        int x = random.nextInt(600 - imagenPlataforma.getIconWidth());
-        // Define la posición Y de la nueva plataforma justo debajo del límite inferior
-        int y = 100;
-        
-        labelPlataforma.setBounds(x, y, imagenPlataforma.getIconWidth(), imagenPlataforma.getIconHeight());
-        juego.add(labelPlataforma, Integer.valueOf(1));
-        plataformas.add(labelPlataforma); // Agrega la nueva plataforma a la lista de plataformas
-    }
-    }
-    */
+   
