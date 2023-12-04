@@ -1,14 +1,10 @@
 package doodle.jump.equipo7.grafico;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Random;
+import java.awt.event.ActionEvent;
 
-
-class Fondo extends JFrame {
+public class Fondo extends JFrame {
     private JLayeredPane juego = new JLayeredPane();
     private JLabel labelDino;
     private ImageIcon imagenDinoDerecha;
@@ -17,7 +13,10 @@ class Fondo extends JFrame {
     private int posicionFondo = 0;
     private boolean personajeEnMovimiento = false;
 
-    public Fondo() {
+    private String personajeSeleccionado;
+    private String fondoSeleccionado;
+
+    public Fondo(String personajeSeleccionado, String fondoSeleccionado) {
         super("DOODLE JUMP");
         ImageIcon icon = new ImageIcon(getClass().getResource("/images/Smily.png"));
         Image iconImage = icon.getImage();
@@ -26,99 +25,96 @@ class Fondo extends JFrame {
         imagenDinoDerecha = new ImageIcon(getClass().getResource("/images/SmilyD.png"));
         imagenDinoIzquierda = new ImageIcon(getClass().getResource("/images/SmilyL.png"));
 
+        this.personajeSeleccionado = personajeSeleccionado;
+        this.fondoSeleccionado = fondoSeleccionado;
+
         // Configurar la imagen inicial del dino
         labelDino = new JLabel(imagenDinoDerecha);
-        labelDino.setBounds(200, 300, imagenDinoDerecha.getIconWidth(), imagenDinoDerecha.getIconHeight());
+        labelDino.setBounds(300, 650, imagenDinoDerecha.getIconWidth(), imagenDinoDerecha.getIconHeight());
         juego.add(labelDino, Integer.valueOf(1));
 
         // Configurar el fondo
         crearFondo();
 
-        // Agregar controlador de eventos de teclado
-        addKeyListener(new KeyListener() {
+        // Configurar el InputMap y ActionMap para KeyBindings
+        InputMap inputMap = juego.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = juego.getActionMap();
+
+        // Mapear las teclas a acciones
+        inputMap.put(KeyStroke.getKeyStroke("LEFT"), "moverIzquierda");
+        inputMap.put(KeyStroke.getKeyStroke("RIGHT"), "moverDerecha");
+
+        // Crear acciones y asociarlas a las teclas
+        actionMap.put("moverIzquierda", new AbstractAction() {
             @Override
-            public void keyTyped(KeyEvent e) {
-                // No es necesario para este caso
-            }
-            @Override
-            public void keyPressed(KeyEvent e) {
-                int key = e.getKeyCode();
-                if (key == KeyEvent.VK_LEFT) {
-                    moverSmilyIzquierda();
-                } else if (key == KeyEvent.VK_RIGHT) {
-                    moverSmilyDerecha();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {
-                // No es necesario para este caso
+            public void actionPerformed(ActionEvent e) {
+                moverSmilyIzquierda();
             }
         });
 
+        actionMap.put("moverDerecha", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moverSmilyDerecha();
+            }
+        });
 
         setFocusable(true); // Permitir que el JFrame reciba eventos de teclado
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 900);
+        setSize(600, 800); // Ajustar el tamaño de la ventana
         setLocationRelativeTo(null);
-
     }
 
     public void mostrarFondoyPersonaje() {
         add(juego, BorderLayout.CENTER);
         setResizable(false);
         setVisible(true);
-        for (int i = 0; i < 10; i++) {
-            moverSmilyAbajo();
-            moverSmilyArriba();
-        }
-
     }
 
     public void crearFondo() {
-        juego.setPreferredSize(new Dimension(600, 900));
+        juego.setPreferredSize(new Dimension(600, 800)); // Ajustar la dimensión del JLayeredPane
         ImageIcon imagenFondo = new ImageIcon(getClass().getResource("/images/doodleFondo.png"));
         labelFondo = new JLabel(imagenFondo);
-        labelFondo.setBounds(0, 0, 600, 900);
+        labelFondo.setBounds(0, 0, 600, 800); // Ajustar la posición y tamaño del fondo
         juego.add(labelFondo, Integer.valueOf(0));
     }
 
-    public void moverSmilyAbajo() {
-        int y = labelDino.getY();
-        if (y < getHeight() - labelDino.getHeight()) {
-            y += 150; // Ajusta la cantidad de píxeles que el dino se mueve hacia abajo
-            labelDino.setLocation(labelDino.getX(), y);
+    public void moverSmilyIzquierda() {
+        labelDino.setIcon(imagenDinoIzquierda);
+        int x = labelDino.getX();
+        if (x > 0) {
+            x -= 10; // Ajusta la cantidad de píxeles que el dino se mueve a la izquierda
+            labelDino.setLocation(x, labelDino.getY());
+            personajeEnMovimiento = true;
         }
     }
 
-    public void moverSmilyArriba() {
-        int y = labelDino.getY();
-        if (y > getHeight() - labelDino.getHeight()) {
-            y -= 150; // Ajusta la cantidad de píxeles que el dino se mueve hacia abajo
-            labelDino.setLocation(labelDino.getX(), y);
+    public void moverSmilyDerecha() {
+        labelDino.setIcon(imagenDinoDerecha);
+        int x = labelDino.getX();
+        if (x < getWidth() - labelDino.getWidth()) {
+            x += 10; // Ajusta la cantidad de píxeles que el dino se mueve a la derecha
+            labelDino.setLocation(x, labelDino.getY());
+            personajeEnMovimiento = true;
         }
     }
 
-   public void moverSmilyIzquierda() {
-    labelDino.setIcon(imagenDinoIzquierda);
-    int x = labelDino.getX();
-    if (x > 0) {
-        x -= 10; // Ajusta la cantidad de píxeles que el dino se mueve a la izquierda
-        labelDino.setLocation(x, labelDino.getY());
-        personajeEnMovimiento = true;
+    public void cambiarPersonaje(String nombrePersonaje) {
+        // Lógica para cambiar el personaje en el juego
+        System.out.println("Cambiando personaje a: " + nombrePersonaje);
+        // Por ejemplo, podrías cambiar la imagen del personaje en el juego
+        // labelDino.setIcon(new ImageIcon(getClass().getResource("/images/" + nombrePersonaje + ".png")));
+    }
+
+    public void cambiarFondo(String nombreFondo) {
+        // Lógica para cambiar el fondo en el juego
+        System.out.println("Cambiando fondo a: " + nombreFondo);
+        // Por ejemplo, podrías cambiar la imagen de fondo en el juego
+        // labelFondo.setIcon(new ImageIcon(getClass().getResource("/images/" + nombreFondo + ".png")));
     }
 }
 
-public void moverSmilyDerecha() {
-    labelDino.setIcon(imagenDinoDerecha);
-    int x = labelDino.getX();
-    if (x < getWidth() - labelDino.getWidth()) {
-        x += 10; // Ajusta la cantidad de píxeles que el dino se mueve a la derecha
-        labelDino.setLocation(x, labelDino.getY());
-        personajeEnMovimiento = true;
-    }
-}
-    
-}
+
 
 
     /*public void crearFondo() {
