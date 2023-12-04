@@ -1,4 +1,4 @@
-package doodle.jump.equipo7.grafico;
+package jump.equipo7.grafico;
 
 import javax.swing.*;
 import java.awt.*;

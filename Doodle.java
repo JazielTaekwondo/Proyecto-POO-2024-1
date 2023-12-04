@@ -1,5 +1,4 @@
-package doodle;
-import doodle.jump.equipo7.grafico.Botones;
+import jump.equipo7.grafico.Botones;
 
 public class Doodle {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package doodle.jump.equipo7.grafico;
+package jump.equipo7.grafico;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,6 +16,7 @@ public class Botones extends JFrame implements ActionListener {
 
         inicio = new JButton();
         salir = new JButton();
+
 
         ImageIcon fotoBoton = new ImageIcon(getClass().getResource("/images/BotonInicio.png"));
         ImageIcon fotoBoton2 = new ImageIcon(getClass().getResource("/images/BotonSalida.png"));
