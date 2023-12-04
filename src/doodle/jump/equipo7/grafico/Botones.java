@@ -43,7 +43,7 @@ public class Botones extends JFrame implements ActionListener {
         if(e.getSource()==inicio){
             Fondo newGame = new Fondo();
             newGame.mostrarFondoyPersonaje();
-            newGame.generarPlataformas();
+            //newGame.generarPlataformas();
             this.setVisible(false);
         }
         if(e.getSource()==salir){
